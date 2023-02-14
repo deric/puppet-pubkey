@@ -1,5 +1,7 @@
 # puppet-pubkey
 
+[![Static & Spec Tests](https://github.com/deric/puppet-pubkey/actions/workflows/spec.yml/badge.svg)](https://github.com/deric/puppet-pubkey/actions/workflows/spec.yml)
+
 Puppet module that allows generating ssh key pair and exchanging the public key via exported Puppet resource.
 
 ## Usage

@@ -50,16 +50,16 @@ define pubkey::ssh (
     default => "-b ${size}"
   }
 
-  $ssh_comment = $comment ? {
-    undef   => "-C '${title}'",
-    default => "-C '${comment}'"
+  $_comment = $comment ? {
+    undef   => shellquote($title),
+    default => shellquote($comment)
   }
 
   $privkey_path = pubkey::ssh_key_path("${_home}/.ssh", $_type, false)
   $pubkey_path = pubkey::ssh_key_path("${_home}/.ssh", $_type, true)
 
   exec { "ssh-keygen-${title}":
-    command => "ssh-keygen -t ${_type} -q ${key_bits} -N '' ${ssh_comment} -f ${privkey_path}",
+    command => "ssh-keygen -t ${_type} -q ${key_bits} -N '' -C '${_comment}' -f ${privkey_path}",
     creates => $privkey_path,
     user    => $_user,
     onlyif  => "test ! -f ${privkey_path}",

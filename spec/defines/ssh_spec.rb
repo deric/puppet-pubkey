@@ -32,7 +32,7 @@ describe 'pubkey::ssh' do
 
     it 'generates ssh key pair' do
       cmd = <<~CMD
-        ssh-keygen -t rsa -q -b 4096 -N '' -C 'bob's key' -f /home/bob/.ssh/id_rsa
+        ssh-keygen -t rsa -q -b 4096 -N '' -C '\"bob's key\"' -f /home/bob/.ssh/id_rsa
       CMD
 
       is_expected.to contain_exec('ssh-keygen-bob\'s key').with_command(cmd.delete("\n"))

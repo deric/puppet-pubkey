@@ -47,3 +47,12 @@ The key will be exported as `alice_key@foo`. In order to import the key on other
 ```puppet
 Ssh_authorized_key <<| tag == "tag_users" |>>
 ```
+
+## Limitations
+
+Two consecutives Puppet runs are required to export the key. During the first run ssh key will be generated, during second one exported.
+
+## Dependencies
+
+  - [puppetlabs/stdlib](https://github.com/puppetlabs/puppetlabs-stdlib)
+  - [puppetlabs/inifile](https://github.com/puppetlabs/puppetlabs-inifile)

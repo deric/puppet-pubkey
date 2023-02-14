@@ -49,11 +49,33 @@ The key will be exported as `alice_key@foo`. In order to import the key on other
 Ssh_authorized_key <<| tag == "tag_users" |>>
 ```
 
+## How does this work?
+
+On the first run `ssh-keygen` is executed, if the desired ssh key pair doen't exist yet.
+
+Puppet compiles code remotely, on a puppetserver. Which means that the local files are not available at the compile time. Local files (like public ssh keys) can be accessed from Facter code that is evaluated before applying the Puppet catalog. However Facter doesn't accept any arguments, so we don't know which keys to load before evaluating the Puppet code. An intermediate cache file `/var/cache/pubkey/exported_keys.ini` is used to store location of exported keys. During next run the keys are fetched and exported under `pubkey` fact.
+
+Exported ssh keys are stored as hierarchical fact. See `facter --puppet -y pubkey`
+
+```yaml
+pubkey:
+  bob_ed25519:
+    comment: "bob_ed25519"
+    key: "AAAAC3NzaC1lZDI1NTE5AAAAIHBqbh2bZtW2jyX5BnsbAahP3KwGSVKVisggLDqJKnkQ"
+    type: ssh-ed25519
+```
+
+From Puppet code the key is available via `$fact['pubkey']['bob_ed25519']['key']`.
+
 ## Limitations
 
-Two consecutives Puppet runs are required to export the key. During the first run ssh key will be generated, during second one exported.
+Two consecutives Puppet runs are required to export the key. During the first run ssh key will be generated, during the second one it will be fetched from disk, exported and available as a fact.
 
 ## Dependencies
+
+`ssh-keygen` needs to be installed on the system.
+
+Module dependencies:
 
   - [puppetlabs/stdlib](https://github.com/puppetlabs/puppetlabs-stdlib)
   - [puppetlabs/inifile](https://github.com/puppetlabs/puppetlabs-inifile)

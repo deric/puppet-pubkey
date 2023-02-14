@@ -5,6 +5,7 @@
   "summary": "Generate ssh key pair and export public keys",
   "license": "Apache-2.0",
   "source": "https://github.com/deric/puppet-pubkey",
+  "issues_url": "https://github.com/deric/puppet-pubkey/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",

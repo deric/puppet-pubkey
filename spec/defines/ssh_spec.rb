@@ -35,7 +35,8 @@ describe 'pubkey::ssh' do
         ssh-keygen -t rsa -q -b 4096 -N '' -C '\"bob's key\"' -f /home/bob/.ssh/id_rsa
       CMD
 
-      is_expected.to contain_exec('ssh-keygen-bob\'s key').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-bob\'s key').with_command(cmd.delete("\n"))
+      is_expected.to contain_pubkey__keygen('keygen-bob\'s key')
     end
   end
 
@@ -57,10 +58,11 @@ describe 'pubkey::ssh' do
 
     it 'generates ssh key pair' do
       cmd = <<~CMD
-        ssh-keygen -t dsa -q  -N '' -C 'john_dsa' -f /home/john/.ssh/id_dsa
+        ssh-keygen -t dsa -q -N '' -C 'john_dsa' -f /home/john/.ssh/id_dsa
       CMD
 
-      is_expected.to contain_exec('ssh-keygen-john_dsa').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-john_dsa').with_command(cmd.delete("\n"))
+      is_expected.to contain_pubkey__keygen('keygen-john_dsa')
     end
   end
 
@@ -89,10 +91,17 @@ describe 'pubkey::ssh' do
 
     it 'generates ssh key pair' do
       cmd = <<~CMD
-        ssh-keygen -t ed25519 -q  -N '' -C 'my_ssh_key' -f /home/alice/.ssh/id_ed25519
+        ssh-keygen -t ed25519 -q -N '' -C 'my_ssh_key' -f /home/alice/.ssh/id_ed25519
       CMD
 
-      is_expected.to contain_exec('ssh-keygen-alice_ed25519').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-alice_ed25519').with_command(cmd.delete("\n"))
+      is_expected.to contain_pubkey__keygen('keygen-alice_ed25519')
     end
+  end
+
+  context 'no type param or in title' do
+    let(:title) { 'alice_secret_key' }
+
+    it { is_expected.to raise_error(Puppet::Error, /parameter 'type' expects a match for Pubkey::Type/) }
   end
 end

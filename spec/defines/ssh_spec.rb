@@ -102,6 +102,6 @@ describe 'pubkey::ssh' do
   context 'no type param or in title' do
     let(:title) { 'alice_secret_key' }
 
-    it { is_expected.to raise_error(Puppet::Error, /parameter 'type' expects a match for Pubkey::Type/) }
+    it { is_expected.to raise_error(Puppet::Error, %r{parameter 'type' expects a match for Pubkey::Type}) }
   end
 end

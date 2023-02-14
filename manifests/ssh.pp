@@ -86,7 +86,7 @@ define pubkey::ssh (
     # and exported resources doesn't support Deferred objects
     if 'pubkey' in $facts and $_user in $facts['pubkey'] {
       $ssh_key = $facts['pubkey'][$_user]['key']
-      @@ssh_authorized_key { "${_user}@${hostname}":
+      @@ssh_authorized_key { "${title}@${hostname}":
         ensure => present,
         user   => $_user,
         type   => $facts['pubkey'][$_user]['type'],

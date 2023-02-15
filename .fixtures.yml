@@ -4,3 +4,4 @@
 fixtures:
   forge_modules:
     stdlib: puppetlabs/stdlib
+    sshkeys_core: puppetlabs/sshkeys_core

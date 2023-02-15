@@ -79,3 +79,4 @@ Two consecutives Puppet runs are required to export the key. During the first ru
 Module dependencies:
 
   - [puppetlabs/stdlib](https://github.com/puppetlabs/puppetlabs-stdlib)
+  - [puppetlabs/sshkeys_core](https://github.com/puppetlabs/puppetlabs-sshkeys_core)

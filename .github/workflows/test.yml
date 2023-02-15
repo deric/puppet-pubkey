@@ -36,8 +36,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Build gem
-        run: rake module:build
       - name: Run tests
         run: bundle exec rake spec
       - name: Rubocop

@@ -1,7 +1,7 @@
 # puppet-pubkey
 
 [![Puppet Forge](http://img.shields.io/puppetforge/v/deric/pubkey.svg)](https://forge.puppet.com/modules/deric/pubkey)
-[![Static & Spec Tests](https://github.com/deric/puppet-pubkey/actions/workflows/spec.yml/badge.svg)](https://github.com/deric/puppet-pubkey/actions/workflows/spec.yml)
+[![Tests](https://github.com/deric/puppet-pubkey/actions/workflows/test.yml/badge.svg)](https://github.com/deric/puppet-pubkey/actions/workflows/test.yml)
 
 Puppet module that allows generating ssh key pair and exchanging the public key via exported Puppet resource.
 

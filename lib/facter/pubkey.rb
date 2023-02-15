@@ -3,10 +3,9 @@
 require 'facter'
 
 def pubkey_fetch_key(path)
-  if File.file?(path)
-    lines = IO.readlines(path, chomp: true)
-    pubkey_parse_ssh_key(lines.join(''))
-  end
+  return '' unless File.file?(path)
+  lines = IO.readlines(path, chomp: true)
+  pubkey_parse_ssh_key(lines.join(''))
 end
 
 def pubkey_parse_ssh_key(str)

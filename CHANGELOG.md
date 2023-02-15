@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2023-02-15] Release 0.6.0
+
+**Features**
+
+ - Allow custom separator for splitting user-key type.
+ - Support `root` account without overriding `home`
+ - Added acceptance tests
+
+**Bugfixes**
+
+ - Added missing `sshkeys_core` dependency
+ - `export` might conflict with metaparam (#1)
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.5.0...v0.6.0)
+
 
 ## [2023-02-15] Release 0.5.0
 

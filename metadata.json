@@ -2,7 +2,7 @@
   "name": "deric-pubkey",
   "version": "0.6.0",
   "author": "Tomas Barton",
-  "summary": "Generate ssh key pair and export public keys",
+  "summary": "Generate ssh key pair and export public key",
   "license": "Apache-2.0",
   "source": "https://github.com/deric/puppet-pubkey",
   "issues_url": "https://github.com/deric/puppet-pubkey/issues",

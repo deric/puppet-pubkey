@@ -21,6 +21,7 @@ Auto-detection expects name in format `{username}_{type}`.
  - `user` account name under which we will store the ssh key
  - `type` ssh key type one of: `dsa`, `rsa`, `ecdsa`, `ed25519`, `ecdsa-sk`, `ed25519-sk`
  - `home` user's home directory, assuming .ssh is located in $HOME/.ssh
+ - `prefix` custom key file prefix for the ssh key file (default: `id`)
  - `comment` ssh key's comment
  - `size` number of bits for generated ssh key
  - `tags` optional tags added to the exported key

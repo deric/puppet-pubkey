@@ -19,10 +19,8 @@ describe 'pubkey::ssh' do
     end
 
     it { is_expected.to compile }
-
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
-
-    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('present') }
+    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
     line = 'bob:/home/bob/.ssh/id_rsa.pub'
     it {
@@ -55,7 +53,7 @@ describe 'pubkey::ssh' do
 
     it { is_expected.to compile }
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
-    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('present') }
+    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
     line = 'john:/home/john/.ssh/id_dsa.pub'
     it {
@@ -87,7 +85,7 @@ describe 'pubkey::ssh' do
 
     it { is_expected.to compile }
     it { is_expected.not_to contain_file('/var/cache/pubkey').with_ensure('directory') }
-    it { is_expected.not_to contain_file('/var/cache/pubkey/exported_keys').with_ensure('present') }
+    it { is_expected.not_to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
     line = 'alice:/home/alice/.ssh/id_ed25519.pub'
     it {
@@ -124,7 +122,7 @@ describe 'pubkey::ssh' do
 
     it { is_expected.to compile }
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
-    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('present') }
+    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
     line = 'trudy:/home/trudy/.ssh/id_ed25519_sk.pub'
     it {
@@ -142,6 +140,39 @@ describe 'pubkey::ssh' do
 
       is_expected.to contain_exec('pubkey-ssh-keygen-trudy_ed25519-sk').with_command(cmd.delete("\n"))
       is_expected.to contain_pubkey__keygen('keygen-trudy_ed25519-sk')
+    end
+  end
+
+  context 'with custom key prefix name' do
+    let(:title) { 'custom key' }
+    let(:params) do
+      {
+        type: 'rsa',
+        user: 'george',
+        size: 2048,
+        prefix: 'foo',
+      }
+    end
+
+    it { is_expected.to compile }
+    it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
+    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
+
+    line = 'george:/home/george/.ssh/foo_rsa.pub'
+    it {
+      is_expected.to contain_file_line(line).with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: line,
+      )
+    }
+
+    it 'generates ssh key pair' do
+      cmd = <<~CMD
+        ssh-keygen -t rsa -q -b 2048 -N '' -C '\"custom key\"' -f /home/george/.ssh/foo_rsa
+      CMD
+
+      is_expected.to contain_exec('pubkey-ssh-keygen-custom key').with_command(cmd.delete("\n"))
+      is_expected.to contain_pubkey__keygen('keygen-custom key')
     end
   end
 end

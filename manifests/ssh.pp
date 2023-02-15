@@ -5,6 +5,7 @@
 # @param user account name under which we will store the ssh key
 # @param type ssh key type one of: 'dsa', 'rsa', 'ecdsa', 'ed25519', 'ecdsa-sk', 'ed25519-sk'
 # @param home user's home directory, assuming .ssh is located in $HOME/.ssh
+# @param prefix custom key file prefix for the ssh key file (default: 'id')
 # @param comment ssh key's comment
 # @param size number of bits for generated ssh key
 # @param tags optional tags added to the exported key
@@ -19,6 +20,7 @@ define pubkey::ssh (
   Optional[Pubkey::Type]     $type = undef,
   Stdlib::AbsolutePath       $path = $facts['path'],
   Optional[Stdlib::UnixPath] $home = undef,
+  Optional[String[1]]        $prefix = undef,
   Optional[String[1]]        $comment = undef,
   Optional[Integer]          $size = undef,
   String                     $hostname = $facts['networking']['fqdn'],
@@ -50,11 +52,16 @@ define pubkey::ssh (
     default => shellquote($comment)
   }
 
+  $_prefix = $prefix ? {
+    undef   => 'id',
+    default => $prefix,
+  }
+
   # convert e.g. ecdsa-sk to ecdsa_sk
   $key_file = regsubst($_type, '\-','_',)
 
-  $privkey_path = "${_home}/.ssh/id_${key_file}"
-  $pubkey_path = "${_home}/.ssh/id_${key_file}.pub"
+  $privkey_path = "${_home}/.ssh/${_prefix}_${key_file}"
+  $pubkey_path = "${_home}/.ssh/${_prefix}_${key_file}.pub"
 
   pubkey::keygen { "keygen-${title}":
     user         => $_user,
@@ -71,7 +78,7 @@ define pubkey::ssh (
     }
 
     file { '/var/cache/pubkey/exported_keys':
-      ensure  => present,
+      ensure  => file,
       require => File['/var/cache/pubkey'],
     }
 

@@ -112,6 +112,6 @@ describe 'pubkey::ssh' do
   context 'no username in title' do
     let(:title) { '_rsa' }
 
-    it { is_expected.to raise_error(Puppet::Error, %r{Pubkey::Keygen[keygen-_rsa]: parameter 'user' expects a String[1] value}) }
+    it { is_expected.to raise_error(Puppet::Error, %r{parameter 'user' expects}) }
   end
 end

@@ -26,9 +26,9 @@ Facter.add(:pubkey) do
   confine kernel: 'Linux'
   setcode do
     res = {}
-    keys = '/var/cache/pubkey/exported_keys.ini'
+    keys = '/var/cache/pubkey/exported_keys'
     if File.exist?(keys)
-      regexp = %r{([A-Za-z0-9-]+)\s?=\s?(.*)}
+      regexp = %r{([A-Za-z0-9-]+):(.*)}
       File.foreach(keys) do |line|
         if line.match? regexp
           m = line.match regexp

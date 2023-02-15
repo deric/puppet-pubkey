@@ -67,14 +67,10 @@ define pubkey::ssh (
       ensure  => directory,
     }
 
-    ini_setting { 'pubkey':
-      ensure    => present,
-      path      => '/var/cache/pubkey/exported_keys.ini',
-      section   => 'ssh_keys',
-      setting   => $title,
-      value     => $pubkey_path,
-      show_diff => true,
-      require   => File['/var/cache/pubkey'],
+    file_line { "${_user}:${pubkey_path}":
+      path    => '/var/cache/pubkey/exported_keys',
+      line    => "${_user}:${pubkey_path}",
+      require => File['/var/cache/pubkey'],
     }
 
     # Load ssh public key for given local user

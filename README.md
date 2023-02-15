@@ -53,7 +53,7 @@ Ssh_authorized_key <<| tag == "tag_users" |>>
 
 On the first run `ssh-keygen` is executed, if the desired ssh key pair doen't exist yet.
 
-Puppet compiles code remotely, on a puppetserver. Which means that the local files are not available at the compile time. Local files (like public ssh keys) can be accessed from Facter code that is evaluated before applying the Puppet catalog. However Facter doesn't accept any arguments, so we don't know which keys to load before evaluating the Puppet code. An intermediate cache file `/var/cache/pubkey/exported_keys.ini` is used to store location of exported keys. During next run the keys are fetched and exported under `pubkey` fact.
+Puppet compiles code remotely, on a puppetserver. Which means that the local files are not available at the compile time. Local files (like public ssh keys) can be accessed from Facter code that is evaluated before applying the Puppet catalog. However Facter doesn't accept any arguments, so we don't know which keys to load before evaluating the Puppet code. An intermediate cache file `/var/cache/pubkey/exported_keys` is used to store location of exported keys. During next run the keys are fetched and exported under `pubkey` fact.
 
 Exported ssh keys are stored as hierarchical fact. See `facter --puppet -y pubkey`
 

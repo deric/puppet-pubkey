@@ -20,13 +20,11 @@ describe 'pubkey::ssh' do
 
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
 
+    line = 'bob:/home/bob/.ssh/id_rsa.pub'
     it {
-      is_expected.to contain_ini_setting('pubkey').with(
-        {
-          ensure: 'present', section: 'ssh_keys',
-          setting: 'bob\'s key', value: '/home/bob/.ssh/id_rsa.pub',
-          path: '/var/cache/pubkey/exported_keys.ini'
-        },
+      is_expected.to contain_file_line(line).with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: line,
       )
     }
 
@@ -46,13 +44,11 @@ describe 'pubkey::ssh' do
     it { is_expected.to compile }
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
 
+    line = 'john:/home/john/.ssh/id_dsa.pub'
     it {
-      is_expected.to contain_ini_setting('pubkey').with(
-        {
-          ensure: 'present', section: 'ssh_keys',
-          setting: 'john_dsa', value: '/home/john/.ssh/id_dsa.pub',
-          path: '/var/cache/pubkey/exported_keys.ini'
-        },
+      is_expected.to contain_file_line(line).with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: line,
       )
     }
 
@@ -79,13 +75,11 @@ describe 'pubkey::ssh' do
     it { is_expected.to compile }
     it { is_expected.not_to contain_file('/var/cache/pubkey').with_ensure('directory') }
 
+    line = 'alice:/home/alice/.ssh/id_ed25519.pub'
     it {
-      is_expected.not_to contain_ini_setting('pubkey').with(
-        {
-          ensure: 'present', section: 'ssh_keys',
-          setting: 'alice_rsa', value: '/home/alice/.ssh/id_ed25519.pub',
-          path: '/var/cache/pubkey/exported_keys.ini'
-        },
+      is_expected.not_to contain_file_line(line).with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: line,
       )
     }
 

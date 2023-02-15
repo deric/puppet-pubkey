@@ -43,7 +43,7 @@ jobs:
   acceptance:
     runs-on: ubuntu-latest
     env:
-      BEAKER_setfile: debian10-64
+      BEAKER_setfile: ${{ matrix.beaker }}
       PUPPET_VERSION: ${{ matrix.puppet }}
     strategy:
       fail-fast: false
@@ -51,11 +51,10 @@ jobs:
         puppet:
           - "~> 7.0"
           - "~> 6.29"
-        ruby:
-          - '2.7'
-          - '3.0'
-        example: ${{ fromJson(needs.pre.outputs.examples) }}
-    name: Acceptance / Ruby ${{ matrix.ruby }} - ${{ matrix.puppet }}
+        beaker:
+          - debian10-64
+          - debian11-64
+    name: Acceptance / Image ${{ matrix.beaker }} - ${{ matrix.puppet }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby

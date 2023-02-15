@@ -88,7 +88,7 @@ describe 'pubkey::ssh' do
     let(:params) do
       {
         comment: 'my_ssh_key',
-        export: false,
+        export_key: false,
       }
     end
 

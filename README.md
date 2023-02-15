@@ -25,7 +25,7 @@ Auto-detection expects name in format `{username}_{type}`.
  - `comment` ssh key's comment
  - `size` number of bits for generated ssh key
  - `tags` optional tags added to the exported key
- - `export` whether export the generated public key as `ssh_authorized_key` (default: `true`)
+ - `export_key` whether export the generated public key as `ssh_authorized_key` (default: `true`)
  - `path` standard unix path to look for ssh-keygen
  - `hostname` that will be part of exported resource
 

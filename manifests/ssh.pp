@@ -9,7 +9,7 @@
 # @param comment ssh key's comment
 # @param size number of bits for generated ssh key
 # @param tags optional tags added to the exported key
-# @param export whether export the generated key (default: true)
+# @param export_key whether export the generated key (default: true)
 # @param path standard unix path to look for ssh-keygen
 # @param hostname that will be part of exported resource
 #
@@ -25,7 +25,7 @@ define pubkey::ssh (
   Optional[Integer]          $size = undef,
   String                     $hostname = $facts['networking']['fqdn'],
   Optional[Array[String]]    $tags = undef,
-  Boolean                    $export = true,
+  Boolean                    $export_key = true,
 ) {
   # try to auto-detect username and key type
   if empty($type) or empty($user) {
@@ -81,7 +81,7 @@ define pubkey::ssh (
     size         => $size,
   }
 
-  if $export {
+  if $export_key {
     file { '/var/cache/pubkey':
       ensure  => directory,
     }

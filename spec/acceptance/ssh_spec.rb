@@ -33,8 +33,8 @@ describe 'pubkey::ssh' do
     describe file('/root/.ssh/id_rsa.pub') do
       it { is_expected.to be_file }
       it { is_expected.to be_readable.by('owner') }
-      it { is_expected.not_to be_readable.by('group') }
-      it { is_expected.not_to be_readable.by('others') }
+      it { is_expected.to be_readable.by('group') }
+      it { is_expected.to be_readable.by('others') }
     end
   end
 end

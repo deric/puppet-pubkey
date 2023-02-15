@@ -50,8 +50,11 @@ define pubkey::ssh (
     default => shellquote($comment)
   }
 
-  $privkey_path = pubkey::ssh_key_path("${_home}/.ssh", $_type, false)
-  $pubkey_path = pubkey::ssh_key_path("${_home}/.ssh", $_type, true)
+  # convert e.g. ecdsa-sk to ecdsa_sk
+  $key_file = regsubst($_type, '\-','_',)
+
+  $privkey_path = "${_home}/.ssh/id_${key_file}"
+  $pubkey_path = "${_home}/.ssh/id_${key_file}.pub"
 
   pubkey::keygen { "keygen-${title}":
     user         => $_user,

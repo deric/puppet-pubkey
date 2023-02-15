@@ -118,4 +118,30 @@ describe 'pubkey::ssh' do
 
     it { is_expected.to raise_error(Puppet::Error, %r{parameter 'user' expects}) }
   end
+
+  context 'with ed25519-sk type' do
+    let(:title) { 'trudy_ed25519-sk' }
+
+    it { is_expected.to compile }
+    it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
+    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('present') }
+
+    line = 'trudy:/home/trudy/.ssh/id_ed25519_sk.pub'
+    it {
+      is_expected.to contain_file_line(line).with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: line,
+      )
+    }
+
+    # TODO: this might require no-touch-required option to make this useful
+    it 'generates ssh key pair' do
+      cmd = <<~CMD
+        ssh-keygen -t ed25519-sk -q -N '' -C 'trudy_ed25519-sk' -f /home/trudy/.ssh/id_ed25519_sk
+      CMD
+
+      is_expected.to contain_exec('pubkey-ssh-keygen-trudy_ed25519-sk').with_command(cmd.delete("\n"))
+      is_expected.to contain_pubkey__keygen('keygen-trudy_ed25519-sk')
+    end
+  end
 end

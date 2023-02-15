@@ -33,12 +33,18 @@ define pubkey::ssh (
   }
 
   $_type = $type ? {
-    undef   => size($array) > 1 ? { true => $array[1], false => fail('unable to determine type') },
+    undef   => size($array) > 1 ? {
+      true => $array[1],
+      false => fail('unable to determine type')
+    },
     default => $type
   }
 
   $_user = $user ? {
-    undef   => size($array) >= 1 ? { true => $array[0], false => fail('unable to determine user') },
+    undef   => size($array) >= 1 ? {
+      true => $array[0],
+      false => fail('unable to determine user')
+    },
     default => $user
   }
 
@@ -95,12 +101,11 @@ define pubkey::ssh (
     # NOTE: we can't access remote disk from a compile server
     # and exported resources doesn't support Deferred objects
     if 'pubkey' in $facts and $_user in $facts['pubkey'] {
-      $ssh_key = $facts['pubkey'][$_user]['key']
       @@ssh_authorized_key { "${title}@${hostname}":
         ensure => present,
         user   => $_user,
         type   => $facts['pubkey'][$_user]['type'],
-        key    => $ssh_key,
+        key    => $facts['pubkey'][$_user]['key'],
         tag    => $tags,
       }
     }

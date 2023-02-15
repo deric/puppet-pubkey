@@ -117,6 +117,12 @@ describe 'pubkey::ssh' do
     it { is_expected.to raise_error(Puppet::Error, %r{parameter 'user' expects}) }
   end
 
+  context 'empty title' do
+    let(:title) { '-' }
+
+    it { is_expected.to raise_error(Puppet::Error, %r{unable to determine type}) }
+  end
+
   context 'with ed25519-sk type' do
     let(:title) { 'trudy_ed25519-sk' }
 

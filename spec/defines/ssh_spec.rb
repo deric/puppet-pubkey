@@ -175,4 +175,35 @@ describe 'pubkey::ssh' do
       is_expected.to contain_pubkey__keygen('keygen-custom key')
     end
   end
+
+  context 'root account' do
+    let(:title) { 'root_key' }
+    let(:params) do
+      {
+        type: 'rsa',
+        user: 'root',
+      }
+    end
+
+    it { is_expected.to compile }
+    it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
+    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
+
+    line = 'root:/root/.ssh/id_rsa.pub'
+    it {
+      is_expected.to contain_file_line(line).with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: line,
+      )
+    }
+
+    it 'generates ssh key pair' do
+      cmd = <<~CMD
+        ssh-keygen -t rsa -q -N '' -C 'root_key' -f /root/.ssh/id_rsa
+      CMD
+
+      is_expected.to contain_exec('pubkey-ssh-keygen-root_key').with_command(cmd.delete("\n"))
+      is_expected.to contain_pubkey__keygen('keygen-root_key')
+    end
+  end
 end

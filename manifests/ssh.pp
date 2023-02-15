@@ -43,7 +43,10 @@ define pubkey::ssh (
   }
 
   $_home = $home ? {
-    undef   => "/home/${_user}",
+    undef   => $_user ? {
+      'root'  => "/${_user}",
+      default => "/home/${_user}",
+    },
     default => $home,
   }
 

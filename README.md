@@ -80,3 +80,11 @@ Module dependencies:
 
   - [puppetlabs/stdlib](https://github.com/puppetlabs/puppetlabs-stdlib)
   - [puppetlabs/sshkeys_core](https://github.com/puppetlabs/puppetlabs-sshkeys_core)
+
+## Acceptance test
+
+Run with specific set:
+
+```
+BEAKER_destroy=no BEAKER_setfile=debian10-64 bundle exec rake beaker
+```

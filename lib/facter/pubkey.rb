@@ -3,7 +3,7 @@
 require 'facter'
 
 def pubkey_fetch_key(path)
-  return '' unless File.file?(path)
+  return {} unless File.file?(path)
   lines = IO.readlines(path, chomp: true)
   pubkey_parse_ssh_key(lines.join(''))
 end

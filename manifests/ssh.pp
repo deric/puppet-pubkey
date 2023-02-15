@@ -15,11 +15,11 @@
 # @example
 #   pubkey::ssh { 'john_rsa': }
 define pubkey::ssh (
-  Optional[String]           $user = undef,
+  Optional[String[1]]        $user = undef,
   Optional[Pubkey::Type]     $type = undef,
   Stdlib::AbsolutePath       $path = $facts['path'],
   Optional[Stdlib::UnixPath] $home = undef,
-  Optional[String]           $comment = undef,
+  Optional[String[1]]        $comment = undef,
   Optional[Integer]          $size = undef,
   String                     $hostname = $facts['networking']['fqdn'],
   Optional[Array[String]]    $tags = undef,

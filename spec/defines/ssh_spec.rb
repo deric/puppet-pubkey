@@ -87,7 +87,7 @@ describe 'pubkey::ssh' do
 
     it { is_expected.to compile }
     it { is_expected.not_to contain_file('/var/cache/pubkey').with_ensure('directory') }
-    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('present') }
+    it { is_expected.not_to contain_file('/var/cache/pubkey/exported_keys').with_ensure('present') }
 
     line = 'alice:/home/alice/.ssh/id_ed25519.pub'
     it {

@@ -2,11 +2,11 @@
 #
 # @api private
 define pubkey::keygen (
-  String               $user,
+  String[1]            $user,
   Pubkey::Type         $type,
   Stdlib::AbsolutePath $path,
   Stdlib::UnixPath     $privkey_path,
-  String               $comment,
+  String[1]            $comment,
   Optional[Integer]    $size = undef,
 ) {
   $key_bits = $size ? {

@@ -4,7 +4,9 @@ require 'spec_helper'
 
 describe 'pubkey::ssh' do
   _, os_facts = on_supported_os.first
-  let(:facts) { os_facts }
+  let(:facts) do
+    os_facts.merge({ hostname: 'localhost' })
+  end
 
   context 'with username and type' do
     let(:title) { 'bob\'s key' }
@@ -36,6 +38,14 @@ describe 'pubkey::ssh' do
       is_expected.to contain_exec('pubkey-ssh-keygen-bob\'s key').with_command(cmd.delete("\n"))
       is_expected.to contain_pubkey__keygen('keygen-bob\'s key')
     end
+
+    # The public key can't be loaded on the first run
+    it {
+      expect(exported_resources).not_to contain_ssh_authorized_key('bob\'s key@localhost').with(
+        user: 'bob',
+        type: 'ssh-rsa',
+      )
+    }
   end
 
   context 'guess username and type from title' do
@@ -97,5 +107,11 @@ describe 'pubkey::ssh' do
     let(:title) { 'alice_secret_key' }
 
     it { is_expected.to raise_error(Puppet::Error, %r{parameter 'type' expects a match for Pubkey::Type}) }
+  end
+
+  context 'no username in title' do
+    let(:title) { '_rsa' }
+
+    it { is_expected.to raise_error(Puppet::Error, %r{Pubkey::Keygen[keygen-_rsa]: parameter 'user' expects a String[1] value}) }
   end
 end

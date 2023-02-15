@@ -27,7 +27,7 @@ Auto-detection expects name in format `{username}_{type}`.
  - `tags` optional tags added to the exported key
  - `export_key` whether export the generated public key as `ssh_authorized_key` (default: `true`)
  - `path` standard unix path to look for ssh-keygen
- - `hostname` that will be part of exported resource
+ - `hostname` that will be part of exported resource (default: FQDN fact)
  - `separator` A character for user and key type auto-detection (default: `_`)
 
 
@@ -36,16 +36,16 @@ Auto-detection expects name in format `{username}_{type}`.
 Optionally provide override any parameter
 ```puppet
 pubkey::ssh { 'alice_key':
-  user     => 'alice',
-  type     => 'ed25519',
-  home     => '/home/alice',
-  comment  => 'alice_ed25519@foo.bar',
-  hostname => 'foo'
-  export   => false,
-  tags     => ['tag_users', 'bar'],
+  user       => 'alice',
+  type       => 'ed25519',
+  home       => '/home/alice',
+  comment    => 'alice_ed25519@foo.bar',
+  hostname   => 'foo'
+  export_key => false,
+  tags       => ['tag_users', 'bar'],
 }
 ```
-The key will be exported as `alice_key@foo`. In order to import the key on other machine use e.g.:
+The key will be exported as `alice_key@foo` (suffix is taken from the `hostname` parameter). In order to import the key on other machine use e.g.:
 
 ```puppet
 Ssh_authorized_key <<| tag == "tag_users" |>>

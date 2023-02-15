@@ -206,4 +206,34 @@ describe 'pubkey::ssh' do
       is_expected.to contain_pubkey__keygen('keygen-root_key')
     end
   end
+
+  context 'with custom home' do
+    let(:title) { 'postgres_rsa' }
+    let(:params) do
+      {
+        home: '/var/lib/postgresql'
+      }
+    end
+
+    it { is_expected.to compile }
+    it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
+    it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
+
+    line = 'postgres:/var/lib/postgresql/.ssh/id_rsa.pub'
+    it {
+      is_expected.to contain_file_line(line).with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: line,
+      )
+    }
+
+    it 'generates ssh key pair' do
+      cmd = <<~CMD
+        ssh-keygen -t rsa -q -N '' -C 'postgres_rsa' -f /var/lib/postgresql/.ssh/id_rsa
+      CMD
+
+      is_expected.to contain_exec('pubkey-ssh-keygen-postgres_rsa').with_command(cmd.delete("\n"))
+      is_expected.to contain_pubkey__keygen('keygen-postgres_rsa')
+    end
+  end
 end

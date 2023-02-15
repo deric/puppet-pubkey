@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [2023-02-15] Release 0.3.0
+
+**Bugfixes**
+
+ - Fixed test
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.2.0...v0.3.0)
+
+
 ## [2023-02-15] Release 0.2.0
 
 **Features**

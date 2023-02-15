@@ -238,11 +238,12 @@ describe 'pubkey::ssh' do
     end
   end
 
-  context 'with custom home' do
-    let(:title) { 'postgres_rsa' }
+  context 'with custom home and separator' do
+    let(:title) { 'postgres-rsa' }
     let(:params) do
       {
-        home: '/var/lib/postgresql'
+        home: '/var/lib/postgresql',
+        separator: '-',
       }
     end
 
@@ -260,15 +261,15 @@ describe 'pubkey::ssh' do
 
     it 'generates ssh key pair' do
       cmd = <<~CMD
-        ssh-keygen -t rsa -q -N '' -C 'postgres_rsa' -f /var/lib/postgresql/.ssh/id_rsa
+        ssh-keygen -t rsa -q -N '' -C 'postgres-rsa' -f /var/lib/postgresql/.ssh/id_rsa
       CMD
 
-      is_expected.to contain_exec('pubkey-ssh-keygen-postgres_rsa')
+      is_expected.to contain_exec('pubkey-ssh-keygen-postgres-rsa')
         .with({
                 command: cmd.delete("\n"),
                 creates: '/var/lib/postgresql/.ssh/id_rsa',
               })
-      is_expected.to contain_pubkey__keygen('keygen-postgres_rsa')
+      is_expected.to contain_pubkey__keygen('keygen-postgres-rsa')
     end
   end
 end

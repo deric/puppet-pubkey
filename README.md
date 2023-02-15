@@ -28,6 +28,7 @@ Auto-detection expects name in format `{username}_{type}`.
  - `export_key` whether export the generated public key as `ssh_authorized_key` (default: `true`)
  - `path` standard unix path to look for ssh-keygen
  - `hostname` that will be part of exported resource
+ - `separator` A character for user and key type auto-detection (default: `_`)
 
 
 ## Advanced configuration

@@ -12,6 +12,7 @@
 # @param export_key whether export the generated key (default: true)
 # @param path standard unix path to look for ssh-keygen
 # @param hostname that will be part of exported resource
+# @param separator A character for user and type auto-detection (default: '_')
 #
 # @example
 #   pubkey::ssh { 'john_rsa': }
@@ -26,10 +27,11 @@ define pubkey::ssh (
   String                     $hostname = $facts['networking']['fqdn'],
   Optional[Array[String]]    $tags = undef,
   Boolean                    $export_key = true,
+  String[1]                  $separator = '_',
 ) {
   # try to auto-detect username and key type
   if empty($type) or empty($user) {
-    $array = split($title, '_')
+    $array = split($title, $separator)
   }
 
   $_type = $type ? {

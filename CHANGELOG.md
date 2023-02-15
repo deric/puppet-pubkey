@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2023-02-15] Release 0.4.0
+
+**Bugfixes**
+
+ - Ensure cache file exists, before adding to it
+ - Return empty hash if the public key doesn't exist
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.3.0...v0.4.0)
+
 
 ## [2023-02-15] Release 0.3.0
 

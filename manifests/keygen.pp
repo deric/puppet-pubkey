@@ -7,9 +7,8 @@ define pubkey::keygen (
   Stdlib::AbsolutePath $path,
   Stdlib::UnixPath     $privkey_path,
   String               $comment,
-  Optional[Integer]    $size,
+  Optional[Integer]    $size = undef,
 ) {
-
   $key_bits = $size ? {
     undef   => '',
     default => " -b ${size}"

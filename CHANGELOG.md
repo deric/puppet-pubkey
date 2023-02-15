@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [2023-02-15] Release 0.5.0
+
+**Features**
+
+ - Replace custom function by simple puppet code
+ - Support custom key file prefix
+
+**Bugfixes**
+
+ - Fixed ensure on cache file
+ - Don't allow passing empty strings
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.4.0...v0.5.0)
+
+
 ## [2023-02-15] Release 0.4.0
 
 **Bugfixes**

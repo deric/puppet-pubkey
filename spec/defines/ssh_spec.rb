@@ -35,7 +35,12 @@ describe 'pubkey::ssh' do
         ssh-keygen -t rsa -q -b 4096 -N '' -C '\"bob's key\"' -f /home/bob/.ssh/id_rsa
       CMD
 
-      is_expected.to contain_exec('pubkey-ssh-keygen-bob\'s key').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-bob\'s key')
+        .with({
+                command: cmd.delete("\n"),
+                creates: '/home/bob/.ssh/id_rsa',
+              })
+
       is_expected.to contain_pubkey__keygen('keygen-bob\'s key')
     end
 
@@ -68,7 +73,11 @@ describe 'pubkey::ssh' do
         ssh-keygen -t dsa -q -N '' -C 'john_dsa' -f /home/john/.ssh/id_dsa
       CMD
 
-      is_expected.to contain_exec('pubkey-ssh-keygen-john_dsa').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-john_dsa')
+        .with({
+                command: cmd.delete("\n"),
+                creates: '/home/john/.ssh/id_dsa',
+              })
       is_expected.to contain_pubkey__keygen('keygen-john_dsa')
     end
   end
@@ -100,7 +109,11 @@ describe 'pubkey::ssh' do
         ssh-keygen -t ed25519 -q -N '' -C 'my_ssh_key' -f /home/alice/.ssh/id_ed25519
       CMD
 
-      is_expected.to contain_exec('pubkey-ssh-keygen-alice_ed25519').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-alice_ed25519')
+        .with({
+                command: cmd.delete("\n"),
+                creates: '/home/alice/.ssh/id_ed25519',
+              })
       is_expected.to contain_pubkey__keygen('keygen-alice_ed25519')
     end
   end
@@ -144,7 +157,11 @@ describe 'pubkey::ssh' do
         ssh-keygen -t ed25519-sk -q -N '' -C 'trudy_ed25519-sk' -f /home/trudy/.ssh/id_ed25519_sk
       CMD
 
-      is_expected.to contain_exec('pubkey-ssh-keygen-trudy_ed25519-sk').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-trudy_ed25519-sk')
+        .with({
+                command: cmd.delete("\n"),
+                creates: '/home/trudy/.ssh/id_ed25519_sk',
+              })
       is_expected.to contain_pubkey__keygen('keygen-trudy_ed25519-sk')
     end
   end
@@ -177,7 +194,11 @@ describe 'pubkey::ssh' do
         ssh-keygen -t rsa -q -b 2048 -N '' -C '\"custom key\"' -f /home/george/.ssh/foo_rsa
       CMD
 
-      is_expected.to contain_exec('pubkey-ssh-keygen-custom key').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-custom key')
+        .with({
+                command: cmd.delete("\n"),
+                creates: '/home/george/.ssh/foo_rsa',
+              })
       is_expected.to contain_pubkey__keygen('keygen-custom key')
     end
   end
@@ -208,7 +229,11 @@ describe 'pubkey::ssh' do
         ssh-keygen -t rsa -q -N '' -C 'root_key' -f /root/.ssh/id_rsa
       CMD
 
-      is_expected.to contain_exec('pubkey-ssh-keygen-root_key').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-root_key')
+        .with({
+                command: cmd.delete("\n"),
+                creates: '/root/.ssh/id_rsa',
+              })
       is_expected.to contain_pubkey__keygen('keygen-root_key')
     end
   end
@@ -238,7 +263,11 @@ describe 'pubkey::ssh' do
         ssh-keygen -t rsa -q -N '' -C 'postgres_rsa' -f /var/lib/postgresql/.ssh/id_rsa
       CMD
 
-      is_expected.to contain_exec('pubkey-ssh-keygen-postgres_rsa').with_command(cmd.delete("\n"))
+      is_expected.to contain_exec('pubkey-ssh-keygen-postgres_rsa')
+        .with({
+                command: cmd.delete("\n"),
+                creates: '/var/lib/postgresql/.ssh/id_rsa',
+              })
       is_expected.to contain_pubkey__keygen('keygen-postgres_rsa')
     end
   end

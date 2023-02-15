@@ -44,17 +44,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BEAKER_setfile: ${{ matrix.beaker }}
-      PUPPET_VERSION: ${{ matrix.puppet }}
     strategy:
       fail-fast: false
       matrix:
-        puppet:
-          - "~> 7.0"
-          - "~> 6.29"
         beaker:
           - debian10-64
           - debian11-64
-    name: Acceptance / Image ${{ matrix.beaker }} - ${{ matrix.puppet }}
+    name: Acceptance / Image ${{ matrix.beaker }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup ruby

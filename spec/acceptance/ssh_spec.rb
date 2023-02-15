@@ -11,9 +11,9 @@ describe 'pubkey::ssh' do
       EOS
 
       expect(apply_manifest(pp, {
-        :catch_failures => false,
-        :debug          => false,
-        }).exit_code).to be_zero
+                              catch_failures: false,
+                              debug: false,
+                            }).exit_code).to be_zero
     end
 
     describe file('/root/.ssh') do

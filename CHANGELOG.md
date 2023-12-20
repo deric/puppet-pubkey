@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2023-12-20] Release 0.7.0
+
+**Features**
+
+ - Support Puppet 8
+ - Support Debian 12
+ - Support stdlib 9.x
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.6.0...v0.7.0)
+
+
 ## [2023-02-15] Release 0.6.0
 
 **Features**

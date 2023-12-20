@@ -51,6 +51,8 @@ The key will be exported as `alice_key@foo` (suffix is taken from the `hostname`
 Ssh_authorized_key <<| tag == "tag_users" |>>
 ```
 
+All Puppet variables are documented in [REFERENCE.md](./REFERENCE.md).
+
 ## How does this work?
 
 On the first run `ssh-keygen` is executed, if the desired ssh key pair doen't exist yet.

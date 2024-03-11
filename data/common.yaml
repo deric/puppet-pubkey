@@ -1,1 +1,2 @@
---- {}
+---
+pubkey::cache_dir: /var/cache/pubkey

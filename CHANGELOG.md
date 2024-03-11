@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2024-03-11] Release 0.8.0
+
+**Features**
+
+ - Added main `pubkey` class for common configuration
+
+**Bugfixes**
+
+ - Fixed duplicate resource declaration for cache dir
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.7.0...v0.8.0)
+
+
 ## [2023-12-20] Release 0.7.0
 
 **Features**

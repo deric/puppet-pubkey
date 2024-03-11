@@ -1,1 +1,4 @@
---- {}
+---
+pubkey::cache_owner: root
+pubkey::cache_group: root
+pubkey::export_keys: true

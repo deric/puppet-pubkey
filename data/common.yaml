@@ -1,2 +1,4 @@
 ---
-pubkey::cache_dir: /var/cache/pubkey
+pubkey::cache_owner: root
+pubkey::cache_group: root
+pubkey::export_keys: true

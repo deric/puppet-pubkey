@@ -9,18 +9,18 @@ def pubkey_fetch_key(path)
 end
 
 def pubkey_parse_ssh_key(str)
-  matched = str.match(%r{((sk-ssh-ed25519|sk-ecdsa-|ssh-|ecdsa-)[^\s]+)\s+([^\s]+)\s+(.*)$}})
+  matched = str.match(%r{((sk-ssh-ed25519|sk-ecdsa-|ssh-|ecdsa-)[^\s]+)\s+([^\s]+)\s+(.*)$})
   raise ArgumentError, "Wrong Keyline format: #{str}" unless matched && matched.length == 5
   key = {
     'key' => matched[3],
   }
   options = str[0, str.index(matched[0])].rstrip
   comment = matched[4]
-  if options.empty?
-    key['type'] = matched[1],
-  else
-    key['type'] = "#{options}#{matched[1]}"
-  end
+  key['type'] = if options.empty?
+                  matched[1]
+                else
+                  "#{options}#{matched[1]}"
+                end
   key['comment'] = comment unless comment.empty?
 
   key

@@ -17,7 +17,7 @@ def pubkey_parse_ssh_key(str)
   options = str[0, str.index(matched[0])].rstrip
   comment = matched[4]
   if options.empty?
-    key['type'] => matched[1],
+    key['type'] = matched[1],
   else
     key['type'] = "#{options}#{matched[1]}"
   end

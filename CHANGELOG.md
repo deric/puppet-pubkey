@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2024-03-12] Release 0.8.1
+
+**Bugfixes**
+
+ - Fix ssh key type with prefix `sk-` ([#4](https://github.com/deric/puppet-pubkey/issues/4))
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.8.0...v0.8.1)
+
+
 ## [2024-03-11] Release 0.8.0
 
 **Features**

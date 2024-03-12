@@ -1,6 +1,6 @@
 {
   "name": "deric-pubkey",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "author": "Tomas Barton",
   "summary": "Generate ssh key pair and export public key",
   "license": "Apache-2.0",

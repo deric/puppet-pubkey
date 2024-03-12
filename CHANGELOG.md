@@ -2,13 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2024-03-12] Release 0.8.2
+## [2024-03-12] Release 0.8.3
 
 **Bugfixes**
 
  - Actually support `sk-ssh-ed25519` key ([#4](https://github.com/deric/puppet-pubkey/issues/4))
 
- [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.8.1...v0.8.2)
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.8.1...v0.8.3)
 
 
 ## [2024-03-12] Release 0.8.1

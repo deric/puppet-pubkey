@@ -98,10 +98,7 @@ describe 'pubkey::ssh' do
         pubkey::ssh { 'john_ed25519-sk': }
       EOS
 
-      expect(apply_manifest(pp, {
-                             catch_failures: true,
-                              debug: false,
-                           }).exit_code).to 255
+      apply_manifest(pp, { expect_failures: true, })
       # missing FIDO (yubi) key
       # Key enrollment failed: invalid format
     end

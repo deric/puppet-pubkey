@@ -30,6 +30,8 @@ Auto-detection expects name in format `{username}_{type}`.
  - `hostname` that will be part of exported resource (default: FQDN fact)
  - `separator` A character for user and key type auto-detection (default: `_`)
 
+Ssh key type depends on `ssh-keygen` version, see `ssh-keygen --help` for list of supported types on your system.
+
 
 ## Advanced configuration
 

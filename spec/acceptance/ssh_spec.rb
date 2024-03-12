@@ -91,21 +91,21 @@ describe 'pubkey::ssh' do
     end
   end
 
-  context 'secure key' do
+  context 'secure key', skip: ((os[:release].to_i == 10) ? 'debian 10 not supported' : false) do
     it 'generate ssh key' do
+      skip('not supported on Debian 10') if os[:release].to_i == 10
       pp = <<~EOS
         pubkey::ssh { 'john_ed25519-sk': }
       EOS
 
-      expect(apply_manifest(pp, {
-                              catch_failures: false,
+      res = apply_manifest(pp, {
+                             catch_failures: true,
                               debug: false,
-                            }).exit_code).to be_zero
-
-      expect(apply_manifest(pp, {
-                              catch_failures: false,
-                              debug: false,
-                            }).exit_code).to be_zero
+                           })
+      expect(res.exit_code).to 255
+      expect(res.stderr.include?('Key enrollment failed: invalid format')).to true
+      # missing FIDO (yubi) key
+      # Key enrollment failed: invalid format
     end
 
     describe file('/home/john/.ssh') do
@@ -113,25 +113,6 @@ describe 'pubkey::ssh' do
       it { is_expected.to be_readable.by('owner') }
       it { is_expected.not_to be_readable.by('group') }
       it { is_expected.not_to be_readable.by('others') }
-    end
-
-    describe file('/home/john/.ssh/id_ed25519_sk') do
-      it { is_expected.to be_file }
-      it { is_expected.to be_readable.by('owner') }
-      it { is_expected.not_to be_readable.by('group') }
-      it { is_expected.not_to be_readable.by('others') }
-    end
-
-    describe file('/home/john/.ssh/id_ed25519_sk.pub') do
-      it { is_expected.to be_file }
-      it { is_expected.to be_readable.by('owner') }
-      it { is_expected.to be_readable.by('group') }
-      it { is_expected.to be_readable.by('others') }
-    end
-
-    describe command('cat /var/cache/pubkey/exported_keys') do
-      its(:exit_status) { is_expected.to eq 0 }
-      its(:stdout) { is_expected.to match "john:/home/john/.ssh/id_ed25519_sk.pub\n" }
     end
   end
 end

@@ -50,6 +50,7 @@ jobs:
         beaker:
           - debian10-64
           - debian11-64
+          # - debian12-64 # not supported yet
     name: Acceptance / Image ${{ matrix.beaker }}
     steps:
       - uses: actions/checkout@v3

@@ -90,4 +90,24 @@ describe 'pubkey::ssh' do
       its(:stdout) { is_expected.to match "john:/home/john/.ssh/id_dsa.pub\n" }
     end
   end
+
+  context 'secure key', skip: ((os[:release].to_i == 10) ? 'debian 10 not supported' : false) do
+    it 'generate ssh key' do
+      skip('not supported on Debian 10') if os[:release].to_i == 10
+      pp = <<~EOS
+        pubkey::ssh { 'john_ed25519-sk': }
+      EOS
+
+      apply_manifest(pp, { expect_failures: true, })
+      # missing FIDO (yubi) key
+      # Key enrollment failed: invalid format
+    end
+
+    describe file('/home/john/.ssh') do
+      it { is_expected.to be_directory }
+      it { is_expected.to be_readable.by('owner') }
+      it { is_expected.not_to be_readable.by('group') }
+      it { is_expected.not_to be_readable.by('others') }
+    end
+  end
 end

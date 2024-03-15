@@ -2,6 +2,7 @@
 #
 # Exports public ssh key to Puppetserver
 #
+# @param generate Whether missing key should be generated
 # @param user account name under which we will store the ssh key
 # @param type ssh key type one of: 'dsa', 'rsa', 'ecdsa', 'ed25519', 'ecdsa-sk', 'ed25519-sk'
 # @param home user's home directory, assuming .ssh is located in $HOME/.ssh
@@ -17,6 +18,7 @@
 # @example
 #   pubkey::ssh { 'john_rsa': }
 define pubkey::ssh (
+  Boolean                    $generate = true,
   Optional[String[1]]        $user = undef,
   Optional[Pubkey::Type]     $type = undef,
   Stdlib::AbsolutePath       $path = $facts['path'],
@@ -74,13 +76,15 @@ define pubkey::ssh (
   $privkey_path = "${_home}/.ssh/${_prefix}_${key_file}"
   $pubkey_path = "${_home}/.ssh/${_prefix}_${key_file}.pub"
 
-  pubkey::keygen { "keygen-${title}":
-    user         => $_user,
-    type         => $_type,
-    path         => $path,
-    privkey_path => $privkey_path,
-    comment      => $_comment,
-    size         => $size,
+  if $generate {
+    pubkey::keygen { "keygen-${title}":
+      user         => $_user,
+      type         => $_type,
+      path         => $path,
+      privkey_path => $privkey_path,
+      comment      => $_comment,
+      size         => $size,
+    }
   }
 
   if $export_key {
@@ -98,12 +102,19 @@ define pubkey::ssh (
     # NOTE: we can't access remote disk from a compile server
     # and exported resources doesn't support Deferred objects
     if 'pubkey' in $facts and $_user in $facts['pubkey'] {
-      @@ssh_authorized_key { "${title}@${hostname}":
-        ensure => present,
-        user   => $_user,
-        type   => $facts['pubkey'][$_user]['type'],
-        key    => $facts['pubkey'][$_user]['key'],
-        tag    => $tags,
+      $_key = $facts['pubkey'][$_user]
+      if 'type' in $_key and 'key' in $_key {
+        if !empty($_key['type']) and !empty($_key['key']) {
+          @@ssh_authorized_key { "${title}@${hostname}":
+            ensure => present,
+            user   => $_user,
+            type   => $_key['type'],
+            key    => $_key['key'],
+            tag    => $tags,
+          }
+        } else {
+          warning("ssh_authorized_key type can't be empty: ${_key}")
+        }
       }
     }
   }

@@ -1,3 +1,12 @@
 ---
 networking:
   fqdn: 'host.test'
+pubkey:
+  alice:
+    comment: alice_ed25519
+    key: AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIGgW3IPS7MrL1t8Bta0cZFzvqR8pZMoyuqIVAEXWwb9fAAAABHNzaDo=
+    type: ssh-ed25519
+  bob:
+    comment: invalid key
+    key: 'AAA'
+    type: ''

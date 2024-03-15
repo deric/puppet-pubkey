@@ -18,6 +18,7 @@ Auto-detection expects name in format `{username}_{type}`.
 
 ## Parameters
 
+ - `generate` Whether missing key should be generated (default: `true`)
  - `user` account name under which we will store the ssh key
  - `type` ssh key type one of: `dsa`, `rsa`, `ecdsa`, `ed25519`, `ecdsa-sk`, `ed25519-sk`
  - `home` user's home directory, assuming .ssh is located in $HOME/.ssh

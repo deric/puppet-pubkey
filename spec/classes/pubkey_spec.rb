@@ -110,4 +110,74 @@ describe 'pubkey' do
       )
     }
   end
+
+  context 'with exported_keys' do
+    let(:facts) { os_facts }
+    let :pre_condition do
+      <<-PP
+        pubkey::ssh { 'alice_ed25519':
+          tags    => ['tag_users'],
+        }
+        Ssh_authorized_key <<| tag == 'tag_users' |>>
+      PP
+    end
+
+    exported_keys = '/var/cache/pubkey/exported_keys'
+    it { is_expected.to compile.with_all_deps }
+
+    it { is_expected.to contain_pubkey__ssh('alice_ed25519') }
+
+    it {
+      is_expected.to contain_pubkey__keygen('keygen-alice_ed25519')
+        .with({
+                user: 'alice',
+                type: 'ed25519',
+              })
+    }
+
+    it {
+      is_expected.to contain_file_line('alice:/home/alice/.ssh/id_ed25519.pub')
+        .with(
+        path: exported_keys,
+      )
+    }
+
+    it {
+      expect(exported_resources).to contain_ssh_authorized_key('alice_ed25519@host.test').with(
+        type: 'ssh-ed25519',
+        key: 'AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIGgW3IPS7MrL1t8Bta0cZFzvqR8pZMoyuqIVAEXWwb9fAAAABHNzaDo=',
+      )
+    }
+  end
+
+  context 'without generate' do
+    let(:facts) { os_facts }
+    let :pre_condition do
+      <<-PP
+        pubkey::ssh { 'bob_ed25519':
+          generate => false,
+          tags     => ['users'],
+        }
+        Ssh_authorized_key <<| tag == 'users' |>>
+      PP
+    end
+
+    exported_keys = '/var/cache/pubkey/exported_keys'
+    it { is_expected.to compile.with_all_deps }
+
+    it { is_expected.to contain_pubkey__ssh('bob_ed25519') }
+
+    it { is_expected.not_to contain_pubkey__keygen('keygen-bot_ed25519') }
+
+    it {
+      is_expected.to contain_file_line('bob:/home/bob/.ssh/id_ed25519.pub')
+        .with(
+        path: exported_keys,
+      )
+    }
+
+    it {
+      expect(exported_resources).not_to contain_ssh_authorized_key('bob_ed25519@host.test').with({ type: '' })
+    }
+  end
 end

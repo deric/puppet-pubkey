@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [2024-03-15] Release 0.9.0
+
+**Changes**
+
+ - Require `puppetlabs/sshkeys_core >= 2.1.0` in order to support keys introduced in OpenSSH 8.2
+ - Add param `generate` to make generating key optional
+
+**Bugfixes**
+
+ - Avoid exporting invalid key
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.8.3...v0.9.0)
+
+
 ## [2024-03-12] Release 0.8.3
 
 **Bugfixes**

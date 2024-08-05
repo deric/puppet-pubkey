@@ -32,7 +32,7 @@ Facter.add(:pubkey) do
     res = {}
     keys = '/var/cache/pubkey/exported_keys'
     if File.exist?(keys)
-      regexp = %r{([A-Za-z0-9-]+):(.*)}
+      regexp = %r{([A-Za-z0-9_-]+):(.*)}
       File.foreach(keys) do |line|
         if line.match? regexp
           m = line.match regexp

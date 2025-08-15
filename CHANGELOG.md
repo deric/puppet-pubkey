@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-08-15] Release 1.0.0
+
+**Changes**
+
+ - Support custom `target_user` (#7)
+ - Drop Debian 10, Ubuntu 18.04 support
+ - Support Ubuntu 24.04
+
+**Bugfixes**
+
+ - Fix username regex to include underscore (#6)
+
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v0.9.0...v1.0.0)
+
+
 
 ## [2024-03-15] Release 0.9.0
 

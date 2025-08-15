@@ -20,7 +20,7 @@
 
 ### Data types
 
-* [`Pubkey::Type`](#Pubkey--Type)
+* [`Pubkey::Type`](#Pubkey--Type): Supported ssh key types
 
 ## Classes
 
@@ -77,12 +77,33 @@ Exports public ssh key to Puppetserver
 pubkey::ssh { 'john_rsa': }
 ```
 
+##### 
+
+```puppet
+pubkey::ssh { 'johndoe':
+  type    => 'ed25519',
+  comment => 'johndoe_ed25519',
+  tags    => ['users'],
+}
+```
+
+##### 
+
+```puppet
+pubkey::ssh { 'bob_ed25519':
+  user        => 'bob', # auto-detected from title
+  target_user => 'deploy', # user account under which authorized key will be stored
+  tags        => ['users'],
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `pubkey::ssh` defined type:
 
 * [`generate`](#-pubkey--ssh--generate)
 * [`user`](#-pubkey--ssh--user)
+* [`target_user`](#-pubkey--ssh--target_user)
 * [`type`](#-pubkey--ssh--type)
 * [`home`](#-pubkey--ssh--home)
 * [`prefix`](#-pubkey--ssh--prefix)
@@ -106,7 +127,15 @@ Default value: `true`
 
 Data type: `Optional[String[1]]`
 
-account name under which we will store the ssh key
+account name where ssh key is (optionally) generated and public key stored into exported resource
+
+Default value: `undef`
+
+##### <a name="-pubkey--ssh--target_user"></a>`target_user`
+
+Data type: `Optional[String[1]]`
+
+account name under which we will store the authorized key (by default same as `user`)
 
 Default value: `undef`
 
@@ -194,7 +223,7 @@ Default value: `'_'`
 
 ### <a name="Pubkey--Type"></a>`Pubkey::Type`
 
-The Pubkey::Type data type.
+Supported ssh key types
 
 Alias of `Enum['dsa', 'rsa', 'ecdsa', 'ed25519', 'ecdsa-sk', 'ed25519-sk']`
 

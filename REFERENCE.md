@@ -4,6 +4,10 @@
 
 ## Table of Contents
 
+### Classes
+
+* [`pubkey`](#pubkey): Common configuration
+
 ### Defined types
 
 #### Public Defined types
@@ -17,6 +21,47 @@
 ### Data types
 
 * [`Pubkey::Type`](#Pubkey--Type)
+
+## Classes
+
+### <a name="pubkey"></a>`pubkey`
+
+Common configuration
+
+#### Examples
+
+##### 
+
+```puppet
+include pubkey
+```
+
+#### Parameters
+
+The following parameters are available in the `pubkey` class:
+
+* [`cache_owner`](#-pubkey--cache_owner)
+* [`cache_group`](#-pubkey--cache_group)
+* [`export_keys`](#-pubkey--export_keys)
+
+##### <a name="-pubkey--cache_owner"></a>`cache_owner`
+
+Data type: `String`
+
+Owner of the cache directory
+
+##### <a name="-pubkey--cache_group"></a>`cache_group`
+
+Data type: `String`
+
+Group of the cache directory
+
+##### <a name="-pubkey--export_keys"></a>`export_keys`
+
+Data type: `Boolean`
+
+Whether manage directory for exported keys. Note in order to disable
+pubkey::ssh::export_key should be set to `false` on each key.
 
 ## Defined types
 
@@ -36,6 +81,7 @@ pubkey::ssh { 'john_rsa': }
 
 The following parameters are available in the `pubkey::ssh` defined type:
 
+* [`generate`](#-pubkey--ssh--generate)
 * [`user`](#-pubkey--ssh--user)
 * [`type`](#-pubkey--ssh--type)
 * [`home`](#-pubkey--ssh--home)
@@ -47,6 +93,14 @@ The following parameters are available in the `pubkey::ssh` defined type:
 * [`path`](#-pubkey--ssh--path)
 * [`hostname`](#-pubkey--ssh--hostname)
 * [`separator`](#-pubkey--ssh--separator)
+
+##### <a name="-pubkey--ssh--generate"></a>`generate`
+
+Data type: `Boolean`
+
+Whether missing key should be generated
+
+Default value: `true`
 
 ##### <a name="-pubkey--ssh--user"></a>`user`
 

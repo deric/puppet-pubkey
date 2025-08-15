@@ -3,7 +3,8 @@
 # Exports public ssh key to Puppetserver
 #
 # @param generate Whether missing key should be generated
-# @param user account name under which we will store the ssh key
+# @param user account name where ssh key is (optionally) generated and public key stored into exported resource
+# @param target_user account name under which we will store the authorized key (by default same as `user`)
 # @param type ssh key type one of: 'dsa', 'rsa', 'ecdsa', 'ed25519', 'ecdsa-sk', 'ed25519-sk'
 # @param home user's home directory, assuming .ssh is located in $HOME/.ssh
 # @param prefix custom key file prefix for the ssh key file (default: 'id')
@@ -17,9 +18,24 @@
 #
 # @example
 #   pubkey::ssh { 'john_rsa': }
+#
+# @example
+#  pubkey::ssh { 'johndoe':
+#    type    => 'ed25519',
+#    comment => 'johndoe_ed25519',
+#    tags    => ['users'],
+#  }
+#
+# @example
+#  pubkey::ssh { 'bob_ed25519':
+#    user        => 'bob', # auto-detected from title
+#    target_user => 'deploy', # user account under which authorized key will be stored
+#    tags        => ['users'],
+#  }
 define pubkey::ssh (
   Boolean                    $generate = true,
   Optional[String[1]]        $user = undef,
+  Optional[String[1]]        $target_user = undef,
   Optional[Pubkey::Type]     $type = undef,
   Stdlib::AbsolutePath       $path = $facts['path'],
   Optional[Stdlib::UnixPath] $home = undef,
@@ -50,6 +66,11 @@ define pubkey::ssh (
       false => fail('unable to determine user')
     },
     default => $user
+  }
+
+  $_target_user = $target_user ? {
+    undef   => $_user,
+    default => $target_user,
   }
 
   $_home = $home ? {
@@ -107,7 +128,7 @@ define pubkey::ssh (
         if !empty($_key['type']) and !empty($_key['key']) {
           @@ssh_authorized_key { "${title}@${hostname}":
             ensure => present,
-            user   => $_user,
+            user   => $_target_user,
             type   => $_key['type'],
             key    => $_key['key'],
             tag    => $tags,

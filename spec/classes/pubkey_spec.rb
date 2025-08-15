@@ -144,6 +144,48 @@ describe 'pubkey' do
 
     it {
       expect(exported_resources).to contain_ssh_authorized_key('alice_ed25519@host.test').with(
+        user: 'alice',
+        type: 'ssh-ed25519',
+        key: 'AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIGgW3IPS7MrL1t8Bta0cZFzvqR8pZMoyuqIVAEXWwb9fAAAABHNzaDo=',
+      )
+    }
+  end
+
+  context 'with target_user' do
+    let(:facts) { os_facts }
+    let :pre_condition do
+      <<-PP
+        pubkey::ssh { 'alice_ed25519':
+          tags        => ['users'],
+          target_user => 'bob',
+        }
+        Ssh_authorized_key <<| tag == 'users' |>>
+      PP
+    end
+
+    exported_keys = '/var/cache/pubkey/exported_keys'
+    it { is_expected.to compile.with_all_deps }
+
+    it { is_expected.to contain_pubkey__ssh('alice_ed25519') }
+
+    it {
+      is_expected.to contain_pubkey__keygen('keygen-alice_ed25519')
+        .with({
+                user: 'alice',
+                type: 'ed25519',
+              })
+    }
+
+    it {
+      is_expected.to contain_file_line('alice:/home/alice/.ssh/id_ed25519.pub')
+        .with(
+        path: exported_keys,
+      )
+    }
+
+    it {
+      expect(exported_resources).to contain_ssh_authorized_key('alice_ed25519@host.test').with(
+        user: 'bob',
         type: 'ssh-ed25519',
         key: 'AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIGgW3IPS7MrL1t8Bta0cZFzvqR8pZMoyuqIVAEXWwb9fAAAABHNzaDo=',
       )

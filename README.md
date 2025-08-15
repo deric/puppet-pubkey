@@ -54,6 +54,15 @@ The key will be exported as `alice_key@foo` (suffix is taken from the `hostname`
 Ssh_authorized_key <<| tag == "tag_users" |>>
 ```
 
+Customize `target_user` in order to store authorized key under different account than it was exported from.
+```
+pubkey::ssh { 'bob_ed25519':
+  user        => 'bob', # auto-detected from title
+  target_user => 'deploy', # user account under which authorized key will be stored
+  tags        => ['users'],
+}
+```
+
 All Puppet variables are documented in [REFERENCE.md](./REFERENCE.md).
 
 ## How does this work?

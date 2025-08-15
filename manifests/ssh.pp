@@ -18,6 +18,20 @@
 #
 # @example
 #   pubkey::ssh { 'john_rsa': }
+#
+# @example
+#  pubkey::ssh { 'johndoe':
+#    type    => 'ed25519',
+#    comment => 'johndoe_ed25519',
+#    tags    => ['users'],
+#  }
+#
+# @example
+#  pubkey::ssh { 'bob_ed25519':
+#    user        => 'bob', # auto-detected from title
+#    target_user => 'deploy', # user account under which authorized key will be stored
+#    tags        => ['users'],
+#  }
 define pubkey::ssh (
   Boolean                    $generate = true,
   Optional[String[1]]        $user = undef,

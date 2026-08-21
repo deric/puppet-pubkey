@@ -22,13 +22,21 @@ describe 'pubkey::ssh' do
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
     it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
-    line = 'bob:/home/bob/.ssh/id_rsa.pub'
+    line = 'bob\'s key:/home/bob/.ssh/id_rsa.pub'
     it {
       is_expected.to contain_file_line(line).with(
         path: '/var/cache/pubkey/exported_keys',
         line: line,
       )
     }
+
+    it 'removes legacy username-keyed cache entry' do
+      is_expected.to contain_file_line('bob:/home/bob/.ssh/id_rsa.pub').with(
+        ensure: 'absent',
+        path: '/var/cache/pubkey/exported_keys',
+        line: 'bob:/home/bob/.ssh/id_rsa.pub',
+      )
+    end
 
     it 'generates ssh key pair' do
       cmd = <<~CMD
@@ -60,7 +68,7 @@ describe 'pubkey::ssh' do
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
     it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
-    line = 'john:/home/john/.ssh/id_dsa.pub'
+    line = 'john_dsa:/home/john/.ssh/id_dsa.pub'
     it {
       is_expected.to contain_file_line(line).with(
         path: '/var/cache/pubkey/exported_keys',
@@ -96,7 +104,7 @@ describe 'pubkey::ssh' do
     it { is_expected.not_to contain_file('/var/cache/pubkey').with_ensure('directory') }
     it { is_expected.not_to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
-    line = 'alice:/home/alice/.ssh/id_ed25519.pub'
+    line = 'alice_ed25519:/home/alice/.ssh/id_ed25519.pub'
     it {
       is_expected.not_to contain_file_line(line).with(
         path: '/var/cache/pubkey/exported_keys',
@@ -143,7 +151,7 @@ describe 'pubkey::ssh' do
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
     it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
-    line = 'trudy:/home/trudy/.ssh/id_ed25519_sk.pub'
+    line = 'trudy_ed25519-sk:/home/trudy/.ssh/id_ed25519_sk.pub'
     it {
       is_expected.to contain_file_line(line).with(
         path: '/var/cache/pubkey/exported_keys',
@@ -181,7 +189,7 @@ describe 'pubkey::ssh' do
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
     it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
-    line = 'george:/home/george/.ssh/foo_rsa.pub'
+    line = 'custom key:/home/george/.ssh/foo_rsa.pub'
     it {
       is_expected.to contain_file_line(line).with(
         path: '/var/cache/pubkey/exported_keys',
@@ -216,7 +224,7 @@ describe 'pubkey::ssh' do
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
     it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
-    line = 'root:/root/.ssh/id_rsa.pub'
+    line = 'root_key:/root/.ssh/id_rsa.pub'
     it {
       is_expected.to contain_file_line(line).with(
         path: '/var/cache/pubkey/exported_keys',
@@ -251,7 +259,7 @@ describe 'pubkey::ssh' do
     it { is_expected.to contain_file('/var/cache/pubkey').with_ensure('directory') }
     it { is_expected.to contain_file('/var/cache/pubkey/exported_keys').with_ensure('file') }
 
-    line = 'postgres:/var/lib/postgresql/.ssh/id_rsa.pub'
+    line = 'postgres-rsa:/var/lib/postgresql/.ssh/id_rsa.pub'
     it {
       is_expected.to contain_file_line(line).with(
         path: '/var/cache/pubkey/exported_keys',
@@ -271,5 +279,114 @@ describe 'pubkey::ssh' do
               })
       is_expected.to contain_pubkey__keygen('keygen-postgres-rsa')
     end
+  end
+
+  context 'with multiple keys for the same user' do
+    first_key = 'AAAAC3NzaC1lZDI1NTE5AAAAIGeVK8hndufeFsIQDgd5tGtLEcYGMjxggHwzCQF+ooUg'
+    second_key = 'AAAAC3NzaC1lZDI1NTE5AAAAIKsrFnG8FODegr/4EiAG5NvuLOs7Va+Crv3Gy5WKNoeC'
+
+    let(:title) { 'root_ed25519' }
+    let(:params) do
+      {
+        hostname: 'node.example.com',
+      }
+    end
+    let(:pre_condition) do
+      <<~PP
+        pubkey::ssh { 'backup_ed25519':
+          user     => 'root',
+          prefix   => 'backup',
+          hostname => 'node.example.com',
+        }
+      PP
+    end
+    let(:facts) do
+      os_facts.merge({
+                       pubkey: {
+                         'root_ed25519' => {
+                           'type' => 'ssh-ed25519',
+                           'key' => first_key,
+                           'comment' => 'root_ed25519',
+                         },
+                         'backup_ed25519' => {
+                           'type' => 'ssh-ed25519',
+                           'key' => second_key,
+                           'comment' => 'backup_ed25519',
+                         },
+                       },
+                     })
+    end
+
+    it { is_expected.to compile }
+
+    it {
+      is_expected.to contain_file_line('root_ed25519:/root/.ssh/id_ed25519.pub').with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: 'root_ed25519:/root/.ssh/id_ed25519.pub',
+      )
+    }
+
+    it {
+      is_expected.to contain_file_line('backup_ed25519:/root/.ssh/backup_ed25519.pub').with(
+        path: '/var/cache/pubkey/exported_keys',
+        line: 'backup_ed25519:/root/.ssh/backup_ed25519.pub',
+      )
+    }
+
+    it 'exports each key with its own data' do
+      expect(exported_resources).to contain_ssh_authorized_key('root_ed25519@node.example.com').with(
+        user: 'root',
+        type: 'ssh-ed25519',
+        key: first_key,
+      )
+      expect(exported_resources).to contain_ssh_authorized_key('backup_ed25519@node.example.com').with(
+        user: 'root',
+        type: 'ssh-ed25519',
+        key: second_key,
+      )
+    end
+  end
+
+  context 'with legacy username-keyed fact' do
+    legacy_key = 'AAAAC3NzaC1lZDI1NTE5AAAAIGeVK8hndufeFsIQDgd5tGtLEcYGMjxggHwzCQF+ooUg'
+
+    let(:title) { 'root_ed25519' }
+    let(:params) do
+      {
+        hostname: 'node.example.com',
+      }
+    end
+    let(:facts) do
+      os_facts.merge({
+                       pubkey: {
+                         'root' => {
+                           'type' => 'ssh-ed25519',
+                           'key' => legacy_key,
+                         },
+                       },
+                     })
+    end
+
+    it { is_expected.to compile }
+
+    it 'still exports the key until the cache is rewritten' do
+      expect(exported_resources).to contain_ssh_authorized_key('root_ed25519@node.example.com').with(
+        user: 'root',
+        type: 'ssh-ed25519',
+        key: legacy_key,
+      )
+    end
+  end
+
+  context 'with colon in title' do
+    let(:title) { 'bob:rsa' }
+    let(:params) do
+      {
+        type: 'rsa',
+        user: 'bob',
+      }
+    end
+
+    it { is_expected.to raise_error(Puppet::Error, %r{title must not contain ':'}) }
   end
 end

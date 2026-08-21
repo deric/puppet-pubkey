@@ -113,18 +113,43 @@ define pubkey::ssh (
     # Hardcoded, needs to be the same in facter code
     $cache_dir = '/var/cache/pubkey'
 
-    file_line { "${_user}:${pubkey_path}":
+    if ':' in $title {
+      fail("pubkey::ssh title must not contain ':' (used as a separator in the cache file): ${title}")
+    }
+
+    # Keyed by resource title, a user might have multiple keys (#9)
+    file_line { "${title}:${pubkey_path}":
       path    => "${cache_dir}/exported_keys",
-      line    => "${_user}:${pubkey_path}",
+      line    => "${title}:${pubkey_path}",
       require => [File[$cache_dir], Class['Pubkey']],
+    }
+
+    # Cache entries prior to v2.0.0 were keyed by username, which caused
+    # multiple keys of the same user to overwrite each other (#9)
+    if $_user != $title {
+      ensure_resource('file_line', "${_user}:${pubkey_path}", {
+          'ensure'  => absent,
+          'path'    => "${cache_dir}/exported_keys",
+          'line'    => "${_user}:${pubkey_path}",
+          'require' => [File[$cache_dir], Class['Pubkey']],
+      })
     }
 
     # Load ssh public key for given local user
     # NOTE: we can't access remote disk from a compile server
     # and exported resources doesn't support Deferred objects
-    if 'pubkey' in $facts and $_user in $facts['pubkey'] {
-      $_key = $facts['pubkey'][$_user]
-      if 'type' in $_key and 'key' in $_key {
+    if 'pubkey' in $facts {
+      if $title in $facts['pubkey'] {
+        $_key = $facts['pubkey'][$title]
+      } elsif $_user in $facts['pubkey'] {
+        # fact built from a legacy username-keyed cache entry, avoids
+        # a gap in exported keys until the cache is rewritten
+        $_key = $facts['pubkey'][$_user]
+      } else {
+        $_key = undef
+      }
+
+      if $_key =~ Hash and 'type' in $_key and 'key' in $_key {
         if !empty($_key['type']) and !empty($_key['key']) {
           @@ssh_authorized_key { "${title}@${hostname}":
             ensure => present,

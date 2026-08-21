@@ -32,7 +32,9 @@ Facter.add(:pubkey) do
     res = {}
     keys = '/var/cache/pubkey/exported_keys'
     if File.exist?(keys)
-      regexp = %r{([A-Za-z0-9_-]+):(.*)}
+      # `pubkey::ssh` resource title (or username in the legacy format),
+      # followed by an absolute path to the public key
+      regexp = %r{^([^:]+):(/.*)$}
       File.foreach(keys) do |line|
         if line.match? regexp
           m = line.match regexp

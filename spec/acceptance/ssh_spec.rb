@@ -39,7 +39,7 @@ describe 'pubkey::ssh' do
 
     describe command('cat /var/cache/pubkey/exported_keys') do
       its(:exit_status) { is_expected.to eq 0 }
-      its(:stdout) { is_expected.to match "root:/root/.ssh/id_rsa.pub\n" }
+      its(:stdout) { is_expected.to match "root_rsa:/root/.ssh/id_rsa.pub\n" }
     end
   end
 
@@ -87,7 +87,7 @@ describe 'pubkey::ssh' do
 
     describe command('cat /var/cache/pubkey/exported_keys') do
       its(:exit_status) { is_expected.to eq 0 }
-      its(:stdout) { is_expected.to match "john:/home/john/.ssh/id_dsa.pub\n" }
+      its(:stdout) { is_expected.to match "john_dsa:/home/john/.ssh/id_dsa.pub\n" }
     end
   end
 

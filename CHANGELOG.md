@@ -4,12 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [2025-08-21] Release 2.0.0
 
+**Breaking changes**
+
+ - Require Puppet 8 (dropped Puppet 6 and 7 support)
+ - The cache file `/var/cache/pubkey/exported_keys` and the `pubkey` fact are now keyed by the `pubkey::ssh` resource title instead of the username, so that a single user can have multiple keys. Update any code that reads `$facts['pubkey']` directly. Legacy username-keyed cache entries are removed automatically and previously exported keys remain exported during the transition; the correct per-title keys are exported on the next agent run.
+ - A `pubkey::ssh` title must not contain `:` (used as a separator in the cache file)
+
+**Changes**
+
+ - Update supported OS releases
+ - Allow `puppetlabs/stdlib` 10.x and `puppetlabs/sshkeys_core` 3.x
+
 **Bugfixes**
 
- - Fix exporting multiple keys for the same user ([#9](https://github.com/deric/puppet-pubkey/issues/9)). The cache file `/var/cache/pubkey/exported_keys` and the `pubkey` fact are now keyed by the `pubkey::ssh` resource title instead of the username. Legacy username-keyed cache entries are removed automatically and previously exported keys remain exported during the transition; the correct per-title keys are exported on the next agent run.
+ - Fix exporting multiple keys for the same user ([#9](https://github.com/deric/puppet-pubkey/issues/9))
 
-**Breaking changes**
- - Require Puppet 8
+ [Full changes](https://github.com/deric/puppet-pubkey/compare/v1.0.0...v2.0.0)
 
 
 ## [2025-08-15] Release 1.0.0

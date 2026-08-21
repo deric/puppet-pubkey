@@ -23,7 +23,7 @@ jobs:
     env:
       PUPPET_VERSION: ${{ matrix.puppet }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
         with:
@@ -45,7 +45,7 @@ jobs:
           - debian12-64
     name: Acceptance / Image ${{ matrix.beaker }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
